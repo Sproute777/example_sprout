@@ -1,0 +1,13 @@
+{
+    "settings": "Settings",
+    "next": "Next",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark",
+    "onWorld": "{ worldType , select, light{Hello world} dark{Bye world} other{Other}}",
+    "@changeTheme": {
+        "placeholders": {
+            "worldType": {}
+        }
+    }
+   }
