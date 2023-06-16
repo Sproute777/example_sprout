@@ -13,23 +13,17 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return const Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          _ThemeSlidingControl(),
-           Expanded(child: _LogView())
-        ],
+        children: <Widget>[_ThemeSlidingControl(), Expanded(child: _LogView())],
       ),
     );
   }
 }
 
 class _ThemeSlidingControl extends StatelessWidget {
-  const _ThemeSlidingControl({
-    super.key});
-
+  const _ThemeSlidingControl({super.key});
 
   @override
   Widget build(BuildContext context) {

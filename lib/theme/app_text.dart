@@ -13,9 +13,9 @@ class AppText {
   ];
   static List<TextStyle> selected = [
     const TextStyle(
-        fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black),
+        fontSize: 18, fontWeight: FontWeight.w500, color: Colors.black54),
     const TextStyle(
-        fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
+        fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white54),
   ];
   static List<TextStyle> unselected = [
     const TextStyle(
