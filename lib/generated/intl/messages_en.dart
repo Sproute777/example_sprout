@@ -20,7 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(worldType) => "${Intl.select(worldType, {
+  static String m0(date) => "${date}";
+
+  static String m1(worldType) => "${Intl.select(worldType, {
             'light': 'Hello world',
             'dark': 'Bye world',
             'other': 'Other',
@@ -29,9 +31,10 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "dark": MessageLookupByLibrary.simpleMessage("Dark"),
+        "dateLog": m0,
         "light": MessageLookupByLibrary.simpleMessage("Light"),
         "next": MessageLookupByLibrary.simpleMessage("Next"),
-        "onWorld": m0,
+        "onWorld": m1,
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
         "system": MessageLookupByLibrary.simpleMessage("System")
       };

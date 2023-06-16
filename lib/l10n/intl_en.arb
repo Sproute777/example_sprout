@@ -9,5 +9,17 @@
         "placeholders": {
             "worldType": {}
         }
+        },
+
+    "dateLog": "{date}",
+    "@dateLog": {
+      "placeholders": {
+      "date": {
+           "type": "DateTime",
+            "format": "jms"
+          }
+      }
     }
+
+
    }

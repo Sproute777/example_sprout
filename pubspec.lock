@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.13.0"
+  analyzer_plugin:
+    dependency: transitive
+    description:
+      name: analyzer_plugin
+      sha256: c1d5f167683de03d5ab6c3b53fc9aeefc5d59476e7810ba7bbddff50c6f4392d
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.11.2"
   archive:
     dependency: transitive
     description:
@@ -137,6 +145,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  charcode:
+    dependency: transitive
+    description:
+      name: charcode
+      sha256: fb98c0f6d12c920a02ee2d998da788bca066ca5f148492b7085ee23372b12306
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.1"
   checked_yaml:
     dependency: transitive
     description:
@@ -145,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  cli_util:
+    dependency: transitive
+    description:
+      name: cli_util
+      sha256: b8db3080e59b2503ca9e7922c3df2072cf13992354d5e944074ffa836fba43b7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   clock:
     dependency: transitive
     description:
@@ -232,6 +256,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.8.2"
+  drift_dev:
+    dependency: transitive
+    description:
+      name: drift_dev
+      sha256: "4704966d9eb8f5717bebad7e722397d8150235f4bb1d64eb8b22c55d4566cf6a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.8.3"
   equatable:
     dependency: transitive
     description:
@@ -372,6 +404,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
+  history_log_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/history_log_repository"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   html:
     dependency: transitive
     description:
@@ -384,10 +423,10 @@ packages:
     dependency: transitive
     description:
       name: http
-      sha256: "4c3f04bfb64d3efd508d06b41b825542f08122d30bda4933fb95c069d22a4fa3"
+      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "0.13.6"
   http_multi_server:
     dependency: transitive
     description:
@@ -660,6 +699,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   rxdart:
     dependency: transitive
     description:
@@ -675,62 +722,6 @@ packages:
       relative: true
     source: path
     version: "1.0.0+1"
-  shared_preferences:
-    dependency: "direct main"
-    description:
-      name: shared_preferences
-      sha256: "396f85b8afc6865182610c0a2fc470853d56499f75f7499e2a73a9f0539d23d0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.2"
-  shared_preferences_android:
-    dependency: transitive
-    description:
-      name: shared_preferences_android
-      sha256: "6478c6bbbecfe9aced34c483171e90d7c078f5883558b30ec3163cf18402c749"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.4"
-  shared_preferences_foundation:
-    dependency: transitive
-    description:
-      name: shared_preferences_foundation
-      sha256: e014107bb79d6d3297196f4f2d0db54b5d1f85b8ea8ff63b8e8b391a02700feb
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.2"
-  shared_preferences_linux:
-    dependency: transitive
-    description:
-      name: shared_preferences_linux
-      sha256: "9d387433ca65717bbf1be88f4d5bb18f10508917a8fa2fb02e0fd0d7479a9afa"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
-  shared_preferences_platform_interface:
-    dependency: transitive
-    description:
-      name: shared_preferences_platform_interface
-      sha256: fb5cf25c0235df2d0640ac1b1174f6466bd311f621574997ac59018a6664548d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
-  shared_preferences_web:
-    dependency: transitive
-    description:
-      name: shared_preferences_web
-      sha256: "74083203a8eae241e0de4a0d597dbedab3b8fef5563f33cf3c12d7e93c655ca5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
-  shared_preferences_windows:
-    dependency: transitive
-    description:
-      name: shared_preferences_windows
-      sha256: "5e588e2efef56916a3b229c3bfe81e6a525665a454519ca51dbcc4236a274173"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.0"
   shelf:
     dependency: transitive
     description:
@@ -832,6 +823,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.15"
+  sqlparser:
+    dependency: transitive
+    description:
+      name: sqlparser
+      sha256: "1c075a15ff144b9f381140b9abc73f46b3f88a7fce9207d3d6607a3c24439cf6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.30.2"
   stack_trace:
     dependency: transitive
     description:

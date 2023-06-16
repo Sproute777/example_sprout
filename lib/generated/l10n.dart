@@ -114,6 +114,19 @@ class S {
       args: [worldType],
     );
   }
+
+  /// `{date}`
+  String dateLog(DateTime date) {
+    final DateFormat dateDateFormat = DateFormat.jms(Intl.getCurrentLocale());
+    final String dateString = dateDateFormat.format(date);
+
+    return Intl.message(
+      '$dateString',
+      name: 'dateLog',
+      desc: '',
+      args: [dateString],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

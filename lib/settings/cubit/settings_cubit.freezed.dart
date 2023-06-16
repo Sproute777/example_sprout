@@ -17,6 +17,7 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$SettingsState {
   ThemeMode get themeMode => throw _privateConstructorUsedError;
+  List<HistoryLogEntry> get historyLogs => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $SettingsStateCopyWith<SettingsState> get copyWith =>
@@ -29,7 +30,7 @@ abstract class $SettingsStateCopyWith<$Res> {
           SettingsState value, $Res Function(SettingsState) then) =
       _$SettingsStateCopyWithImpl<$Res, SettingsState>;
   @useResult
-  $Res call({ThemeMode themeMode});
+  $Res call({ThemeMode themeMode, List<HistoryLogEntry> historyLogs});
 }
 
 /// @nodoc
@@ -46,12 +47,17 @@ class _$SettingsStateCopyWithImpl<$Res, $Val extends SettingsState>
   @override
   $Res call({
     Object? themeMode = null,
+    Object? historyLogs = null,
   }) {
     return _then(_value.copyWith(
       themeMode: null == themeMode
           ? _value.themeMode
           : themeMode // ignore: cast_nullable_to_non_nullable
               as ThemeMode,
+      historyLogs: null == historyLogs
+          ? _value.historyLogs
+          : historyLogs // ignore: cast_nullable_to_non_nullable
+              as List<HistoryLogEntry>,
     ) as $Val);
   }
 }
@@ -64,7 +70,7 @@ abstract class _$$_SettingsStateCopyWith<$Res>
       __$$_SettingsStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({ThemeMode themeMode});
+  $Res call({ThemeMode themeMode, List<HistoryLogEntry> historyLogs});
 }
 
 /// @nodoc
@@ -79,12 +85,17 @@ class __$$_SettingsStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? themeMode = null,
+    Object? historyLogs = null,
   }) {
     return _then(_$_SettingsState(
       themeMode: null == themeMode
           ? _value.themeMode
           : themeMode // ignore: cast_nullable_to_non_nullable
               as ThemeMode,
+      historyLogs: null == historyLogs
+          ? _value._historyLogs
+          : historyLogs // ignore: cast_nullable_to_non_nullable
+              as List<HistoryLogEntry>,
     ));
   }
 }
@@ -92,15 +103,27 @@ class __$$_SettingsStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_SettingsState extends _SettingsState {
-  const _$_SettingsState({this.themeMode = ThemeMode.system}) : super._();
+  const _$_SettingsState(
+      {this.themeMode = ThemeMode.system,
+      final List<HistoryLogEntry> historyLogs = const <HistoryLogEntry>[]})
+      : _historyLogs = historyLogs,
+        super._();
 
   @override
   @JsonKey()
   final ThemeMode themeMode;
+  final List<HistoryLogEntry> _historyLogs;
+  @override
+  @JsonKey()
+  List<HistoryLogEntry> get historyLogs {
+    if (_historyLogs is EqualUnmodifiableListView) return _historyLogs;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_historyLogs);
+  }
 
   @override
   String toString() {
-    return 'SettingsState(themeMode: $themeMode)';
+    return 'SettingsState(themeMode: $themeMode, historyLogs: $historyLogs)';
   }
 
   @override
@@ -109,11 +132,14 @@ class _$_SettingsState extends _SettingsState {
         (other.runtimeType == runtimeType &&
             other is _$_SettingsState &&
             (identical(other.themeMode, themeMode) ||
-                other.themeMode == themeMode));
+                other.themeMode == themeMode) &&
+            const DeepCollectionEquality()
+                .equals(other._historyLogs, _historyLogs));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, themeMode);
+  int get hashCode => Object.hash(runtimeType, themeMode,
+      const DeepCollectionEquality().hash(_historyLogs));
 
   @JsonKey(ignore: true)
   @override
@@ -123,11 +149,15 @@ class _$_SettingsState extends _SettingsState {
 }
 
 abstract class _SettingsState extends SettingsState {
-  const factory _SettingsState({final ThemeMode themeMode}) = _$_SettingsState;
+  const factory _SettingsState(
+      {final ThemeMode themeMode,
+      final List<HistoryLogEntry> historyLogs}) = _$_SettingsState;
   const _SettingsState._() : super._();
 
   @override
   ThemeMode get themeMode;
+  @override
+  List<HistoryLogEntry> get historyLogs;
   @override
   @JsonKey(ignore: true)
   _$$_SettingsStateCopyWith<_$_SettingsState> get copyWith =>
