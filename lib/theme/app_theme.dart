@@ -16,7 +16,6 @@ class AppTheme {
     );
   }
 
-
   Brightness get _brightness => Brightness.light;
 
   AppColorCustomTheme get _colors => AppColorCustomTheme.light;
@@ -26,7 +25,6 @@ class AppTheme {
 
 class AppDarkTheme extends AppTheme {
   const AppDarkTheme();
-
 
   @override
   Brightness get _brightness => Brightness.dark;
