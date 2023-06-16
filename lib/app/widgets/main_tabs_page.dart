@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../generated/l10n.dart';
-import '../../routes/routes/routes.dart';
+import '../../router/routes/routes.dart';
 
 class MainTabsPage extends StatefulWidget {
   final Widget child;

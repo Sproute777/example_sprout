@@ -6,7 +6,7 @@ import 'package:history_log_repository/history_log.dart';
 import 'package:settings_repository/settings_repository.dart';
 
 import '../../generated/l10n.dart';
-import '../../routes/app_router.dart';
+import '../../router/app_router.dart';
 import '../../settings/cubit/settings_cubit.dart';
 import '../../theme/app_theme.dart';
 
