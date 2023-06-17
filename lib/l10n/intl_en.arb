@@ -4,6 +4,7 @@
     "system": "System",
     "light": "Light",
     "dark": "Dark",
+    "somethingWentWrong": "Something went wrong",
     "onWorld": "{ worldType , select, light{Hello world} dark{Bye world} other{Other}}",
     "@changeTheme": {
         "placeholders": {

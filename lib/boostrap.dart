@@ -1,35 +1,33 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/widgets.dart';
+
+import 'utils/print_colors.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
     super.onChange(bloc, change);
-    log('onChange(${bloc.runtimeType}, $change)');
+    debugPrint('onChange(${bloc.runtimeType}, $change)');
   }
 
   @override
   void onError(BlocBase<dynamic> bloc, Object error, StackTrace stackTrace) {
-    log('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    debugPrint('$red onError(${bloc.runtimeType}, $error, $stackTrace)');
+    debugPrint(reset);
     super.onError(bloc, error, stackTrace);
   }
 }
 
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   FlutterError.onError = (details) {
-    log(details.exceptionAsString(), stackTrace: details.stack);
+    debugPrint(details.toString());
   };
 
-  await runZonedGuarded(
-    () async {
-      await BlocOverrides.runZoned(
-        () async => runApp(await builder()),
-        blocObserver: AppBlocObserver(),
-      );
-    },
-    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+  runZonedGuarded(
+    () async => runApp(await builder()),
+    (error, stackTrace) =>
+        debugPrint('${error.toString()} ${stackTrace.toString()}'),
   );
 }

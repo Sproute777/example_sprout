@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:database_client/database_client.dart';
 import 'package:flutter/material.dart';
 import 'package:history_log_repository/history_log.dart';
@@ -12,12 +13,10 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     final databaseClient = DatabaseClient();
     final settingsRepository = SettingsRepository(databaseClient.settingsDao);
-    final settings = await settingsRepository.settings().first;
     final historyLogRepository =
         HistoryLogRepository(databaseClient.historyLogDao);
-
+    Bloc.observer = AppBlocObserver();
     return App(
-      initialSettings: settings,
       settingsRepository: settingsRepository,
       historyLogRepository: historyLogRepository,
     );

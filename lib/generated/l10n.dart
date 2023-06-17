@@ -100,6 +100,16 @@ class S {
     );
   }
 
+  /// `Something went wrong`
+  String get somethingWentWrong {
+    return Intl.message(
+      'Something went wrong',
+      name: 'somethingWentWrong',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{ worldType , select, light{Hello world} dark{Bye world} other{Other}}`
   String onWorld(Object worldType) {
     return Intl.select(

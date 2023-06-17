@@ -19,7 +19,6 @@ dependencies:
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.1
   intl: ^0.18.0
-  path: ^1.8.3
   database_client:
     path: packages/database_client
   settings_repository:
@@ -27,8 +26,7 @@ dependencies:
   history_log_repository:
     path: packages/history_log_repository
   flutter_bloc: ^8.1.3
-  path_provider: ^2.0.15
-  flutter_adaptive_scaffold: ^0.1.5
+  bloc_concurrency: ^0.2.2
 
 dev_dependencies:
   flutter_test:

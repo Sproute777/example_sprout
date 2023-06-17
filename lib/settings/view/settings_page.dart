@@ -1,4 +1,3 @@
-import 'package:example_sprout/settings/cubit/settings_cubit.dart';
 import 'package:example_sprout/theme/app_color.dart';
 import 'package:example_sprout/theme/app_text.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,16 +6,44 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../generated/l10n.dart';
+import '../bloc/settings_bloc.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[_ThemeSlidingControl(), Expanded(child: _LogView())],
+    return BlocListener<SettingsBloc, SettingsState>(
+      listener: (context, state) {
+        if (state is FailureSettingsState) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showMaterialBanner(
+              MaterialBanner(
+                padding: const EdgeInsets.all(20),
+                content: Text(S.of(context).somethingWentWrong),
+                leading: const Icon(Icons.error_outline_outlined),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed:
+                        ScaffoldMessenger.of(context).hideCurrentMaterialBanner,
+                    child: const Text('DISMISS'),
+                  ),
+                ],
+              ),
+            );
+        }
+      },
+      child: const Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              _ThemeSlidingControl(),
+              Expanded(child: _LogView())
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -31,14 +58,15 @@ class _ThemeSlidingControl extends StatelessWidget {
     final colors = Theme.of(context).appColorCustomTheme;
     return SizedBox(
       height: 100,
-      child: BlocBuilder<SettingsCubit, SettingsState>(
+      child: BlocBuilder<SettingsBloc, SettingsState>(
         buildWhen: (prev, current) => prev.themeMode != current.themeMode,
         builder: (context, state) {
           return CupertinoSlidingSegmentedControl<ThemeMode>(
               onValueChanged: (value) {
                 if (value != null) {
                   HapticFeedback.lightImpact();
-                  context.read<SettingsCubit>().toggleTheme(value);
+                  debugPrint('pressed');
+                  context.read<SettingsBloc>().add(SettingsEvent.toggle(value));
                 }
               },
               backgroundColor: Colors.blue,
@@ -89,7 +117,7 @@ class _LogView extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).appTextCustomTheme;
     final colors = Theme.of(context).appColorCustomTheme;
-    return BlocBuilder<SettingsCubit, SettingsState>(
+    return BlocBuilder<SettingsBloc, SettingsState>(
       buildWhen: (prev, current) =>
           prev.historyLogs.length != current.historyLogs.length,
       builder: (context, state) {

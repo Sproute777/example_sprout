@@ -36,6 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("Next"),
         "onWorld": m1,
         "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+        "somethingWentWrong":
+            MessageLookupByLibrary.simpleMessage("Something went wrong"),
         "system": MessageLookupByLibrary.simpleMessage("System")
       };
 }

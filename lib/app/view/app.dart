@@ -7,18 +7,16 @@ import 'package:settings_repository/settings_repository.dart';
 
 import '../../generated/l10n.dart';
 import '../../router/app_router.dart';
-import '../../settings/cubit/settings_cubit.dart';
+import '../../settings/bloc/settings_bloc.dart';
 import '../../theme/app_theme.dart';
 
 class App extends StatelessWidget {
   const App({
     super.key,
-    required this.initialSettings,
     required this.settingsRepository,
     required this.historyLogRepository,
   });
 
-  final Settings initialSettings;
   final SettingsRepository settingsRepository;
   final HistoryLogRepository historyLogRepository;
 
@@ -30,9 +28,11 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: historyLogRepository),
       ],
       child: BlocProvider(
-        create: (context) => SettingsCubit(
-            settingsRepository, historyLogRepository, initialSettings)
-          ..init(),
+        create: (context) =>
+            SettingsBloc(settingsRepository, historyLogRepository)
+              ..add(const SettingsEvent.clearHistoryLog())
+              ..add(const SettingsEvent.subscription())
+              ..add(const SettingsEvent.subscriptionHistory()),
         child: _AppView(appGoRouter: AppGoRouter()),
       ),
     );
@@ -41,26 +41,31 @@ class App extends StatelessWidget {
 
 class _AppView extends StatelessWidget {
   final GoRouter appGoRouter;
+
   const _AppView({super.key, required this.appGoRouter});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: const AppTheme().themeData,
-      darkTheme: const AppDarkTheme().themeData,
-      themeMode:
-          context.select<SettingsCubit, ThemeMode>((s) => s.state.themeMode),
-      routeInformationProvider: appGoRouter.routeInformationProvider,
-      routerDelegate: appGoRouter.routerDelegate,
-      routeInformationParser: appGoRouter.routeInformationParser,
-      title: 'Example',
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: S.delegate.supportedLocales,
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      buildWhen: (prev, current) => prev.themeMode != current.themeMode,
+      builder: (context, state) {
+        return MaterialApp.router(
+          theme: const AppTheme().themeData,
+          darkTheme: const AppDarkTheme().themeData,
+          themeMode: state.themeMode,
+          routeInformationProvider: appGoRouter.routeInformationProvider,
+          routerDelegate: appGoRouter.routerDelegate,
+          routeInformationParser: appGoRouter.routeInformationParser,
+          title: 'Example',
+          localizationsDelegates: const [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: S.delegate.supportedLocales,
+        );
+      },
     );
   }
 }

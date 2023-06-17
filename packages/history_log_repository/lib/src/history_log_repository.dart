@@ -5,19 +5,21 @@ import 'package:drift/drift.dart';
 /// Repository accessing the settings
 /// {@endtemplate}
 class HistoryLogRepository {
-  const HistoryLogRepository(this.historyLogDao);
-  final HistoryLogDao historyLogDao;
+  const HistoryLogRepository(HistoryLogDao historyLogDao)
+      : _historyLogDao = historyLogDao;
+
+  final HistoryLogDao _historyLogDao;
 
   Stream<List<HistoryLogEntry>> logs() {
-    return historyLogDao.historyLogEntries();
+    return _historyLogDao.historyLogEntries();
   }
 
   Future<void> clear() {
-    return historyLogDao.clearLogs();
+    return _historyLogDao.clearLogs();
   }
 
   Future<void> saveLog(String name) {
-    return historyLogDao.saveHistoryLog(
+    return _historyLogDao.saveHistoryLog(
       HistoryLogCompanion(
         date: Value(DateTime.now()),
         name: Value(name),
