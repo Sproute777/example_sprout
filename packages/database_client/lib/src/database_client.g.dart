@@ -683,6 +683,213 @@ class AddressCompanion extends UpdateCompanion<AddressEntry> {
   }
 }
 
+class $AlbumTable extends Album with TableInfo<$AlbumTable, AlbumEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AlbumTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _userMeta = const VerificationMeta('user');
+  @override
+  late final GeneratedColumn<int> user = GeneratedColumn<int>(
+      'user', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES user (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [id, title, user];
+  @override
+  String get aliasedName => _alias ?? 'album';
+  @override
+  String get actualTableName => 'album';
+  @override
+  VerificationContext validateIntegrity(Insertable<AlbumEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('user')) {
+      context.handle(
+          _userMeta, user.isAcceptableOrUnknown(data['user']!, _userMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AlbumEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AlbumEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      user: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}user']),
+    );
+  }
+
+  @override
+  $AlbumTable createAlias(String alias) {
+    return $AlbumTable(attachedDatabase, alias);
+  }
+}
+
+class AlbumEntry extends DataClass implements Insertable<AlbumEntry> {
+  final int id;
+  final String title;
+  final int? user;
+  const AlbumEntry({required this.id, required this.title, this.user});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || user != null) {
+      map['user'] = Variable<int>(user);
+    }
+    return map;
+  }
+
+  AlbumCompanion toCompanion(bool nullToAbsent) {
+    return AlbumCompanion(
+      id: Value(id),
+      title: Value(title),
+      user: user == null && nullToAbsent ? const Value.absent() : Value(user),
+    );
+  }
+
+  factory AlbumEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AlbumEntry(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      user: serializer.fromJson<int?>(json['user']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'user': serializer.toJson<int?>(user),
+    };
+  }
+
+  AlbumEntry copyWith(
+          {int? id, String? title, Value<int?> user = const Value.absent()}) =>
+      AlbumEntry(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        user: user.present ? user.value : this.user,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('AlbumEntry(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('user: $user')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, user);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AlbumEntry &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.user == this.user);
+}
+
+class AlbumCompanion extends UpdateCompanion<AlbumEntry> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<int?> user;
+  const AlbumCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.user = const Value.absent(),
+  });
+  AlbumCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    this.user = const Value.absent(),
+  }) : title = Value(title);
+  static Insertable<AlbumEntry> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<int>? user,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (user != null) 'user': user,
+    });
+  }
+
+  AlbumCompanion copyWith(
+      {Value<int>? id, Value<String>? title, Value<int?>? user}) {
+    return AlbumCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      user: user ?? this.user,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (user.present) {
+      map['user'] = Variable<int>(user.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AlbumCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('user: $user')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $CompanyTable extends Company
     with TableInfo<$CompanyTable, CompanyEntry> {
   @override
@@ -1354,13 +1561,1473 @@ class HistoryLogCompanion extends UpdateCompanion<HistoryLogEntry> {
   }
 }
 
+class $CivsTable extends Civs with TableInfo<$CivsTable, CivEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CivsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, name];
+  @override
+  String get aliasedName => _alias ?? 'civs';
+  @override
+  String get actualTableName => 'civs';
+  @override
+  VerificationContext validateIntegrity(Insertable<CivEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CivEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CivEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+    );
+  }
+
+  @override
+  $CivsTable createAlias(String alias) {
+    return $CivsTable(attachedDatabase, alias);
+  }
+}
+
+class CivEntry extends DataClass implements Insertable<CivEntry> {
+  final int id;
+  final String? name;
+  const CivEntry({required this.id, this.name});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    return map;
+  }
+
+  CivsCompanion toCompanion(bool nullToAbsent) {
+    return CivsCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+    );
+  }
+
+  factory CivEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CivEntry(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+    };
+  }
+
+  CivEntry copyWith({int? id, Value<String?> name = const Value.absent()}) =>
+      CivEntry(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('CivEntry(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CivEntry && other.id == this.id && other.name == this.name);
+}
+
+class CivsCompanion extends UpdateCompanion<CivEntry> {
+  final Value<int> id;
+  final Value<String?> name;
+  const CivsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  CivsCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+  });
+  static Insertable<CivEntry> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+    });
+  }
+
+  CivsCompanion copyWith({Value<int>? id, Value<String?>? name}) {
+    return CivsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CivsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HeroesTable extends Heroes with TableInfo<$HeroesTable, HeroEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HeroesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _leadingMeta =
+      const VerificationMeta('leading');
+  @override
+  late final GeneratedColumn<int> leading = GeneratedColumn<int>(
+      'leading', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _slotsMeta = const VerificationMeta('slots');
+  @override
+  late final GeneratedColumn<int> slots = GeneratedColumn<int>(
+      'slots', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _dressMeta = const VerificationMeta('dress');
+  @override
+  late final GeneratedColumn<int> dress = GeneratedColumn<int>(
+      'dress', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _civMeta = const VerificationMeta('civ');
+  @override
+  late final GeneratedColumn<int> civ = GeneratedColumn<int>(
+      'civ', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES civs (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, leading, slots, dress, civ];
+  @override
+  String get aliasedName => _alias ?? 'heroes';
+  @override
+  String get actualTableName => 'heroes';
+  @override
+  VerificationContext validateIntegrity(Insertable<HeroEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('leading')) {
+      context.handle(_leadingMeta,
+          leading.isAcceptableOrUnknown(data['leading']!, _leadingMeta));
+    }
+    if (data.containsKey('slots')) {
+      context.handle(
+          _slotsMeta, slots.isAcceptableOrUnknown(data['slots']!, _slotsMeta));
+    }
+    if (data.containsKey('dress')) {
+      context.handle(
+          _dressMeta, dress.isAcceptableOrUnknown(data['dress']!, _dressMeta));
+    }
+    if (data.containsKey('civ')) {
+      context.handle(
+          _civMeta, civ.isAcceptableOrUnknown(data['civ']!, _civMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HeroEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HeroEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+      leading: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}leading']),
+      slots: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}slots']),
+      dress: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}dress']),
+      civ: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}civ']),
+    );
+  }
+
+  @override
+  $HeroesTable createAlias(String alias) {
+    return $HeroesTable(attachedDatabase, alias);
+  }
+}
+
+class HeroEntry extends DataClass implements Insertable<HeroEntry> {
+  final int id;
+  final String? name;
+  final int? leading;
+  final int? slots;
+  final int? dress;
+  final int? civ;
+  const HeroEntry(
+      {required this.id,
+      this.name,
+      this.leading,
+      this.slots,
+      this.dress,
+      this.civ});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || leading != null) {
+      map['leading'] = Variable<int>(leading);
+    }
+    if (!nullToAbsent || slots != null) {
+      map['slots'] = Variable<int>(slots);
+    }
+    if (!nullToAbsent || dress != null) {
+      map['dress'] = Variable<int>(dress);
+    }
+    if (!nullToAbsent || civ != null) {
+      map['civ'] = Variable<int>(civ);
+    }
+    return map;
+  }
+
+  HeroesCompanion toCompanion(bool nullToAbsent) {
+    return HeroesCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      leading: leading == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leading),
+      slots:
+          slots == null && nullToAbsent ? const Value.absent() : Value(slots),
+      dress:
+          dress == null && nullToAbsent ? const Value.absent() : Value(dress),
+      civ: civ == null && nullToAbsent ? const Value.absent() : Value(civ),
+    );
+  }
+
+  factory HeroEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HeroEntry(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      leading: serializer.fromJson<int?>(json['leading']),
+      slots: serializer.fromJson<int?>(json['slots']),
+      dress: serializer.fromJson<int?>(json['dress']),
+      civ: serializer.fromJson<int?>(json['civ']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+      'leading': serializer.toJson<int?>(leading),
+      'slots': serializer.toJson<int?>(slots),
+      'dress': serializer.toJson<int?>(dress),
+      'civ': serializer.toJson<int?>(civ),
+    };
+  }
+
+  HeroEntry copyWith(
+          {int? id,
+          Value<String?> name = const Value.absent(),
+          Value<int?> leading = const Value.absent(),
+          Value<int?> slots = const Value.absent(),
+          Value<int?> dress = const Value.absent(),
+          Value<int?> civ = const Value.absent()}) =>
+      HeroEntry(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+        leading: leading.present ? leading.value : this.leading,
+        slots: slots.present ? slots.value : this.slots,
+        dress: dress.present ? dress.value : this.dress,
+        civ: civ.present ? civ.value : this.civ,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('HeroEntry(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('leading: $leading, ')
+          ..write('slots: $slots, ')
+          ..write('dress: $dress, ')
+          ..write('civ: $civ')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, leading, slots, dress, civ);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HeroEntry &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.leading == this.leading &&
+          other.slots == this.slots &&
+          other.dress == this.dress &&
+          other.civ == this.civ);
+}
+
+class HeroesCompanion extends UpdateCompanion<HeroEntry> {
+  final Value<int> id;
+  final Value<String?> name;
+  final Value<int?> leading;
+  final Value<int?> slots;
+  final Value<int?> dress;
+  final Value<int?> civ;
+  const HeroesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.leading = const Value.absent(),
+    this.slots = const Value.absent(),
+    this.dress = const Value.absent(),
+    this.civ = const Value.absent(),
+  });
+  HeroesCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.leading = const Value.absent(),
+    this.slots = const Value.absent(),
+    this.dress = const Value.absent(),
+    this.civ = const Value.absent(),
+  });
+  static Insertable<HeroEntry> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? leading,
+    Expression<int>? slots,
+    Expression<int>? dress,
+    Expression<int>? civ,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (leading != null) 'leading': leading,
+      if (slots != null) 'slots': slots,
+      if (dress != null) 'dress': dress,
+      if (civ != null) 'civ': civ,
+    });
+  }
+
+  HeroesCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? name,
+      Value<int?>? leading,
+      Value<int?>? slots,
+      Value<int?>? dress,
+      Value<int?>? civ}) {
+    return HeroesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      leading: leading ?? this.leading,
+      slots: slots ?? this.slots,
+      dress: dress ?? this.dress,
+      civ: civ ?? this.civ,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (leading.present) {
+      map['leading'] = Variable<int>(leading.value);
+    }
+    if (slots.present) {
+      map['slots'] = Variable<int>(slots.value);
+    }
+    if (dress.present) {
+      map['dress'] = Variable<int>(dress.value);
+    }
+    if (civ.present) {
+      map['civ'] = Variable<int>(civ.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HeroesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('leading: $leading, ')
+          ..write('slots: $slots, ')
+          ..write('dress: $dress, ')
+          ..write('civ: $civ')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BuildingsTable extends Buildings
+    with TableInfo<$BuildingsTable, BuildingEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BuildingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _civMeta = const VerificationMeta('civ');
+  @override
+  late final GeneratedColumn<int> civ = GeneratedColumn<int>(
+      'civ', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES civs (id)'));
+  @override
+  List<GeneratedColumn> get $columns => [id, name, civ];
+  @override
+  String get aliasedName => _alias ?? 'buildings';
+  @override
+  String get actualTableName => 'buildings';
+  @override
+  VerificationContext validateIntegrity(Insertable<BuildingEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('civ')) {
+      context.handle(
+          _civMeta, civ.isAcceptableOrUnknown(data['civ']!, _civMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  BuildingEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BuildingEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+      civ: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}civ']),
+    );
+  }
+
+  @override
+  $BuildingsTable createAlias(String alias) {
+    return $BuildingsTable(attachedDatabase, alias);
+  }
+}
+
+class BuildingEntry extends DataClass implements Insertable<BuildingEntry> {
+  final int id;
+  final String? name;
+  final int? civ;
+  const BuildingEntry({required this.id, this.name, this.civ});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || civ != null) {
+      map['civ'] = Variable<int>(civ);
+    }
+    return map;
+  }
+
+  BuildingsCompanion toCompanion(bool nullToAbsent) {
+    return BuildingsCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      civ: civ == null && nullToAbsent ? const Value.absent() : Value(civ),
+    );
+  }
+
+  factory BuildingEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BuildingEntry(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      civ: serializer.fromJson<int?>(json['civ']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+      'civ': serializer.toJson<int?>(civ),
+    };
+  }
+
+  BuildingEntry copyWith(
+          {int? id,
+          Value<String?> name = const Value.absent(),
+          Value<int?> civ = const Value.absent()}) =>
+      BuildingEntry(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+        civ: civ.present ? civ.value : this.civ,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('BuildingEntry(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('civ: $civ')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, civ);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BuildingEntry &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.civ == this.civ);
+}
+
+class BuildingsCompanion extends UpdateCompanion<BuildingEntry> {
+  final Value<int> id;
+  final Value<String?> name;
+  final Value<int?> civ;
+  const BuildingsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.civ = const Value.absent(),
+  });
+  BuildingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.civ = const Value.absent(),
+  });
+  static Insertable<BuildingEntry> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? civ,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (civ != null) 'civ': civ,
+    });
+  }
+
+  BuildingsCompanion copyWith(
+      {Value<int>? id, Value<String?>? name, Value<int?>? civ}) {
+    return BuildingsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      civ: civ ?? this.civ,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (civ.present) {
+      map['civ'] = Variable<int>(civ.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BuildingsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('civ: $civ')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UnitsTable extends Units with TableInfo<$UnitsTable, UnitEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UnitsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _attackMeta = const VerificationMeta('attack');
+  @override
+  late final GeneratedColumn<int> attack = GeneratedColumn<int>(
+      'attack', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _healthMeta = const VerificationMeta('health');
+  @override
+  late final GeneratedColumn<int> health = GeneratedColumn<int>(
+      'health', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _speedMeta = const VerificationMeta('speed');
+  @override
+  late final GeneratedColumn<int> speed = GeneratedColumn<int>(
+      'speed', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _civMeta = const VerificationMeta('civ');
+  @override
+  late final GeneratedColumn<int> civ = GeneratedColumn<int>(
+      'civ', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES civs (id)'));
+  static const VerificationMeta _homeMeta = const VerificationMeta('home');
+  @override
+  late final GeneratedColumn<int> home = GeneratedColumn<int>(
+      'home', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES buildings (id)'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, attack, health, speed, civ, home];
+  @override
+  String get aliasedName => _alias ?? 'units';
+  @override
+  String get actualTableName => 'units';
+  @override
+  VerificationContext validateIntegrity(Insertable<UnitEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('attack')) {
+      context.handle(_attackMeta,
+          attack.isAcceptableOrUnknown(data['attack']!, _attackMeta));
+    }
+    if (data.containsKey('health')) {
+      context.handle(_healthMeta,
+          health.isAcceptableOrUnknown(data['health']!, _healthMeta));
+    }
+    if (data.containsKey('speed')) {
+      context.handle(
+          _speedMeta, speed.isAcceptableOrUnknown(data['speed']!, _speedMeta));
+    }
+    if (data.containsKey('civ')) {
+      context.handle(
+          _civMeta, civ.isAcceptableOrUnknown(data['civ']!, _civMeta));
+    }
+    if (data.containsKey('home')) {
+      context.handle(
+          _homeMeta, home.isAcceptableOrUnknown(data['home']!, _homeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  UnitEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UnitEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+      attack: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}attack']),
+      health: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}health']),
+      speed: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}speed']),
+      civ: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}civ']),
+      home: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}home']),
+    );
+  }
+
+  @override
+  $UnitsTable createAlias(String alias) {
+    return $UnitsTable(attachedDatabase, alias);
+  }
+}
+
+class UnitEntry extends DataClass implements Insertable<UnitEntry> {
+  final int id;
+  final String? name;
+  final int? attack;
+  final int? health;
+  final int? speed;
+  final int? civ;
+  final int? home;
+  const UnitEntry(
+      {required this.id,
+      this.name,
+      this.attack,
+      this.health,
+      this.speed,
+      this.civ,
+      this.home});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || attack != null) {
+      map['attack'] = Variable<int>(attack);
+    }
+    if (!nullToAbsent || health != null) {
+      map['health'] = Variable<int>(health);
+    }
+    if (!nullToAbsent || speed != null) {
+      map['speed'] = Variable<int>(speed);
+    }
+    if (!nullToAbsent || civ != null) {
+      map['civ'] = Variable<int>(civ);
+    }
+    if (!nullToAbsent || home != null) {
+      map['home'] = Variable<int>(home);
+    }
+    return map;
+  }
+
+  UnitsCompanion toCompanion(bool nullToAbsent) {
+    return UnitsCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      attack:
+          attack == null && nullToAbsent ? const Value.absent() : Value(attack),
+      health:
+          health == null && nullToAbsent ? const Value.absent() : Value(health),
+      speed:
+          speed == null && nullToAbsent ? const Value.absent() : Value(speed),
+      civ: civ == null && nullToAbsent ? const Value.absent() : Value(civ),
+      home: home == null && nullToAbsent ? const Value.absent() : Value(home),
+    );
+  }
+
+  factory UnitEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UnitEntry(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      attack: serializer.fromJson<int?>(json['attack']),
+      health: serializer.fromJson<int?>(json['health']),
+      speed: serializer.fromJson<int?>(json['speed']),
+      civ: serializer.fromJson<int?>(json['civ']),
+      home: serializer.fromJson<int?>(json['home']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+      'attack': serializer.toJson<int?>(attack),
+      'health': serializer.toJson<int?>(health),
+      'speed': serializer.toJson<int?>(speed),
+      'civ': serializer.toJson<int?>(civ),
+      'home': serializer.toJson<int?>(home),
+    };
+  }
+
+  UnitEntry copyWith(
+          {int? id,
+          Value<String?> name = const Value.absent(),
+          Value<int?> attack = const Value.absent(),
+          Value<int?> health = const Value.absent(),
+          Value<int?> speed = const Value.absent(),
+          Value<int?> civ = const Value.absent(),
+          Value<int?> home = const Value.absent()}) =>
+      UnitEntry(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+        attack: attack.present ? attack.value : this.attack,
+        health: health.present ? health.value : this.health,
+        speed: speed.present ? speed.value : this.speed,
+        civ: civ.present ? civ.value : this.civ,
+        home: home.present ? home.value : this.home,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('UnitEntry(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('attack: $attack, ')
+          ..write('health: $health, ')
+          ..write('speed: $speed, ')
+          ..write('civ: $civ, ')
+          ..write('home: $home')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, attack, health, speed, civ, home);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UnitEntry &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.attack == this.attack &&
+          other.health == this.health &&
+          other.speed == this.speed &&
+          other.civ == this.civ &&
+          other.home == this.home);
+}
+
+class UnitsCompanion extends UpdateCompanion<UnitEntry> {
+  final Value<int> id;
+  final Value<String?> name;
+  final Value<int?> attack;
+  final Value<int?> health;
+  final Value<int?> speed;
+  final Value<int?> civ;
+  final Value<int?> home;
+  const UnitsCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.attack = const Value.absent(),
+    this.health = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.civ = const Value.absent(),
+    this.home = const Value.absent(),
+  });
+  UnitsCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.attack = const Value.absent(),
+    this.health = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.civ = const Value.absent(),
+    this.home = const Value.absent(),
+  });
+  static Insertable<UnitEntry> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? attack,
+    Expression<int>? health,
+    Expression<int>? speed,
+    Expression<int>? civ,
+    Expression<int>? home,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (attack != null) 'attack': attack,
+      if (health != null) 'health': health,
+      if (speed != null) 'speed': speed,
+      if (civ != null) 'civ': civ,
+      if (home != null) 'home': home,
+    });
+  }
+
+  UnitsCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? name,
+      Value<int?>? attack,
+      Value<int?>? health,
+      Value<int?>? speed,
+      Value<int?>? civ,
+      Value<int?>? home}) {
+    return UnitsCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      attack: attack ?? this.attack,
+      health: health ?? this.health,
+      speed: speed ?? this.speed,
+      civ: civ ?? this.civ,
+      home: home ?? this.home,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (attack.present) {
+      map['attack'] = Variable<int>(attack.value);
+    }
+    if (health.present) {
+      map['health'] = Variable<int>(health.value);
+    }
+    if (speed.present) {
+      map['speed'] = Variable<int>(speed.value);
+    }
+    if (civ.present) {
+      map['civ'] = Variable<int>(civ.value);
+    }
+    if (home.present) {
+      map['home'] = Variable<int>(home.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UnitsCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('attack: $attack, ')
+          ..write('health: $health, ')
+          ..write('speed: $speed, ')
+          ..write('civ: $civ, ')
+          ..write('home: $home')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DressesTable extends Dresses with TableInfo<$DressesTable, DressEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DressesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _healmetMeta =
+      const VerificationMeta('healmet');
+  @override
+  late final GeneratedColumn<int> healmet = GeneratedColumn<int>(
+      'healmet', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _bodyMeta = const VerificationMeta('body');
+  @override
+  late final GeneratedColumn<int> body = GeneratedColumn<int>(
+      'body', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _leftHandMeta =
+      const VerificationMeta('leftHand');
+  @override
+  late final GeneratedColumn<int> leftHand = GeneratedColumn<int>(
+      'left_hand', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _rightHandMeta =
+      const VerificationMeta('rightHand');
+  @override
+  late final GeneratedColumn<int> rightHand = GeneratedColumn<int>(
+      'right_hand', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _bootsMeta = const VerificationMeta('boots');
+  @override
+  late final GeneratedColumn<int> boots = GeneratedColumn<int>(
+      'boots', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _civMeta = const VerificationMeta('civ');
+  @override
+  late final GeneratedColumn<int> civ = GeneratedColumn<int>(
+      'civ', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES civs (id)'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, healmet, body, leftHand, rightHand, boots, civ];
+  @override
+  String get aliasedName => _alias ?? 'dresses';
+  @override
+  String get actualTableName => 'dresses';
+  @override
+  VerificationContext validateIntegrity(Insertable<DressEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('healmet')) {
+      context.handle(_healmetMeta,
+          healmet.isAcceptableOrUnknown(data['healmet']!, _healmetMeta));
+    }
+    if (data.containsKey('body')) {
+      context.handle(
+          _bodyMeta, body.isAcceptableOrUnknown(data['body']!, _bodyMeta));
+    }
+    if (data.containsKey('left_hand')) {
+      context.handle(_leftHandMeta,
+          leftHand.isAcceptableOrUnknown(data['left_hand']!, _leftHandMeta));
+    }
+    if (data.containsKey('right_hand')) {
+      context.handle(_rightHandMeta,
+          rightHand.isAcceptableOrUnknown(data['right_hand']!, _rightHandMeta));
+    }
+    if (data.containsKey('boots')) {
+      context.handle(
+          _bootsMeta, boots.isAcceptableOrUnknown(data['boots']!, _bootsMeta));
+    }
+    if (data.containsKey('civ')) {
+      context.handle(
+          _civMeta, civ.isAcceptableOrUnknown(data['civ']!, _civMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DressEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DressEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name']),
+      healmet: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}healmet']),
+      body: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}body']),
+      leftHand: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}left_hand']),
+      rightHand: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}right_hand']),
+      boots: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}boots']),
+      civ: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}civ']),
+    );
+  }
+
+  @override
+  $DressesTable createAlias(String alias) {
+    return $DressesTable(attachedDatabase, alias);
+  }
+}
+
+class DressEntry extends DataClass implements Insertable<DressEntry> {
+  final int id;
+  final String? name;
+  final int? healmet;
+  final int? body;
+  final int? leftHand;
+  final int? rightHand;
+  final int? boots;
+  final int? civ;
+  const DressEntry(
+      {required this.id,
+      this.name,
+      this.healmet,
+      this.body,
+      this.leftHand,
+      this.rightHand,
+      this.boots,
+      this.civ});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    if (!nullToAbsent || healmet != null) {
+      map['healmet'] = Variable<int>(healmet);
+    }
+    if (!nullToAbsent || body != null) {
+      map['body'] = Variable<int>(body);
+    }
+    if (!nullToAbsent || leftHand != null) {
+      map['left_hand'] = Variable<int>(leftHand);
+    }
+    if (!nullToAbsent || rightHand != null) {
+      map['right_hand'] = Variable<int>(rightHand);
+    }
+    if (!nullToAbsent || boots != null) {
+      map['boots'] = Variable<int>(boots);
+    }
+    if (!nullToAbsent || civ != null) {
+      map['civ'] = Variable<int>(civ);
+    }
+    return map;
+  }
+
+  DressesCompanion toCompanion(bool nullToAbsent) {
+    return DressesCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      healmet: healmet == null && nullToAbsent
+          ? const Value.absent()
+          : Value(healmet),
+      body: body == null && nullToAbsent ? const Value.absent() : Value(body),
+      leftHand: leftHand == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftHand),
+      rightHand: rightHand == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rightHand),
+      boots:
+          boots == null && nullToAbsent ? const Value.absent() : Value(boots),
+      civ: civ == null && nullToAbsent ? const Value.absent() : Value(civ),
+    );
+  }
+
+  factory DressEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DressEntry(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      healmet: serializer.fromJson<int?>(json['healmet']),
+      body: serializer.fromJson<int?>(json['body']),
+      leftHand: serializer.fromJson<int?>(json['leftHand']),
+      rightHand: serializer.fromJson<int?>(json['rightHand']),
+      boots: serializer.fromJson<int?>(json['boots']),
+      civ: serializer.fromJson<int?>(json['civ']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+      'healmet': serializer.toJson<int?>(healmet),
+      'body': serializer.toJson<int?>(body),
+      'leftHand': serializer.toJson<int?>(leftHand),
+      'rightHand': serializer.toJson<int?>(rightHand),
+      'boots': serializer.toJson<int?>(boots),
+      'civ': serializer.toJson<int?>(civ),
+    };
+  }
+
+  DressEntry copyWith(
+          {int? id,
+          Value<String?> name = const Value.absent(),
+          Value<int?> healmet = const Value.absent(),
+          Value<int?> body = const Value.absent(),
+          Value<int?> leftHand = const Value.absent(),
+          Value<int?> rightHand = const Value.absent(),
+          Value<int?> boots = const Value.absent(),
+          Value<int?> civ = const Value.absent()}) =>
+      DressEntry(
+        id: id ?? this.id,
+        name: name.present ? name.value : this.name,
+        healmet: healmet.present ? healmet.value : this.healmet,
+        body: body.present ? body.value : this.body,
+        leftHand: leftHand.present ? leftHand.value : this.leftHand,
+        rightHand: rightHand.present ? rightHand.value : this.rightHand,
+        boots: boots.present ? boots.value : this.boots,
+        civ: civ.present ? civ.value : this.civ,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('DressEntry(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('healmet: $healmet, ')
+          ..write('body: $body, ')
+          ..write('leftHand: $leftHand, ')
+          ..write('rightHand: $rightHand, ')
+          ..write('boots: $boots, ')
+          ..write('civ: $civ')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, healmet, body, leftHand, rightHand, boots, civ);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DressEntry &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.healmet == this.healmet &&
+          other.body == this.body &&
+          other.leftHand == this.leftHand &&
+          other.rightHand == this.rightHand &&
+          other.boots == this.boots &&
+          other.civ == this.civ);
+}
+
+class DressesCompanion extends UpdateCompanion<DressEntry> {
+  final Value<int> id;
+  final Value<String?> name;
+  final Value<int?> healmet;
+  final Value<int?> body;
+  final Value<int?> leftHand;
+  final Value<int?> rightHand;
+  final Value<int?> boots;
+  final Value<int?> civ;
+  const DressesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.healmet = const Value.absent(),
+    this.body = const Value.absent(),
+    this.leftHand = const Value.absent(),
+    this.rightHand = const Value.absent(),
+    this.boots = const Value.absent(),
+    this.civ = const Value.absent(),
+  });
+  DressesCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.healmet = const Value.absent(),
+    this.body = const Value.absent(),
+    this.leftHand = const Value.absent(),
+    this.rightHand = const Value.absent(),
+    this.boots = const Value.absent(),
+    this.civ = const Value.absent(),
+  });
+  static Insertable<DressEntry> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<int>? healmet,
+    Expression<int>? body,
+    Expression<int>? leftHand,
+    Expression<int>? rightHand,
+    Expression<int>? boots,
+    Expression<int>? civ,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (healmet != null) 'healmet': healmet,
+      if (body != null) 'body': body,
+      if (leftHand != null) 'left_hand': leftHand,
+      if (rightHand != null) 'right_hand': rightHand,
+      if (boots != null) 'boots': boots,
+      if (civ != null) 'civ': civ,
+    });
+  }
+
+  DressesCompanion copyWith(
+      {Value<int>? id,
+      Value<String?>? name,
+      Value<int?>? healmet,
+      Value<int?>? body,
+      Value<int?>? leftHand,
+      Value<int?>? rightHand,
+      Value<int?>? boots,
+      Value<int?>? civ}) {
+    return DressesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      healmet: healmet ?? this.healmet,
+      body: body ?? this.body,
+      leftHand: leftHand ?? this.leftHand,
+      rightHand: rightHand ?? this.rightHand,
+      boots: boots ?? this.boots,
+      civ: civ ?? this.civ,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (healmet.present) {
+      map['healmet'] = Variable<int>(healmet.value);
+    }
+    if (body.present) {
+      map['body'] = Variable<int>(body.value);
+    }
+    if (leftHand.present) {
+      map['left_hand'] = Variable<int>(leftHand.value);
+    }
+    if (rightHand.present) {
+      map['right_hand'] = Variable<int>(rightHand.value);
+    }
+    if (boots.present) {
+      map['boots'] = Variable<int>(boots.value);
+    }
+    if (civ.present) {
+      map['civ'] = Variable<int>(civ.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DressesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('healmet: $healmet, ')
+          ..write('body: $body, ')
+          ..write('leftHand: $leftHand, ')
+          ..write('rightHand: $rightHand, ')
+          ..write('boots: $boots, ')
+          ..write('civ: $civ')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$DatabaseClient extends GeneratedDatabase {
   _$DatabaseClient(QueryExecutor e) : super(e);
   late final $UserTable user = $UserTable(this);
   late final $AddressTable address = $AddressTable(this);
+  late final $AlbumTable album = $AlbumTable(this);
   late final $CompanyTable company = $CompanyTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
   late final $HistoryLogTable historyLog = $HistoryLogTable(this);
+  late final $CivsTable civs = $CivsTable(this);
+  late final $HeroesTable heroes = $HeroesTable(this);
+  late final $BuildingsTable buildings = $BuildingsTable(this);
+  late final $UnitsTable units = $UnitsTable(this);
+  late final $DressesTable dresses = $DressesTable(this);
+  late final CivsDao civsDao = CivsDao(this as DatabaseClient);
   late final UserDao userDao = UserDao(this as DatabaseClient);
   late final SettingsDao settingsDao = SettingsDao(this as DatabaseClient);
   late final HistoryLogDao historyLogDao =
@@ -1369,6 +3036,17 @@ abstract class _$DatabaseClient extends GeneratedDatabase {
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [user, address, company, settings, historyLog];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        user,
+        address,
+        album,
+        company,
+        settings,
+        historyLog,
+        civs,
+        heroes,
+        buildings,
+        units,
+        dresses
+      ];
 }

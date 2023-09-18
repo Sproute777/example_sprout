@@ -4,3 +4,5 @@ export 'src/database_client.dart';
 export 'src/dao/user_dao.dart';
 export 'src/dao/settings_dao.dart';
 export 'src/dao/history_log_dao.dart';
+export 'src/dao/civs_dao.dart';
+export 'src/entries/entries.dart';
