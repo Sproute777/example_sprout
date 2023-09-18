@@ -30,20 +30,29 @@ class DatabaseClient extends _$DatabaseClient {
   DatabaseClient() : super(impl.connect());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration {
-    return MigrationStrategy(
-      onCreate: (Migrator m) async {
-        await m.createAll();
+     return MigrationStrategy(
+      onCreate: (m) async{
+           await m.createAll();
       },
-      onUpgrade: (Migrator m, int from, int to) async {
-        // if (from < 2) {
-        //   // we added the [SettingsEntryModel]
-        //   await m.createTable(settings);
-        // }
-        //
+           beforeOpen: (details) async {
+        // Make sure that foreign keys are enabled
+        await customStatement('PRAGMA foreign_keys = ON');
+
+        if (details.wasCreated) {
+          // Create a bunch of default values so the app doesn't look too empty
+          // on the first start.
+          await batch((b) {
+            
+        });
+        }
+        // This follows the recommendation to validate that the database schema
+        // matches what drift expects (https://drift.simonbinder.eu/docs/advanced-features/migrations/#verifying-a-database-schema-at-runtime).
+        // It allows catching bugs in the migration logic early.
+        // await impl.validateDatabaseSchema(this);
       },
     );
   }

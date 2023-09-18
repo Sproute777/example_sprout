@@ -1356,7 +1356,6 @@ class HistoryLogCompanion extends UpdateCompanion<HistoryLogEntry> {
 
 abstract class _$DatabaseClient extends GeneratedDatabase {
   _$DatabaseClient(QueryExecutor e) : super(e);
-  _$DatabaseClient.connect(DatabaseConnection c) : super.connect(c);
   late final $UserTable user = $UserTable(this);
   late final $AddressTable address = $AddressTable(this);
   late final $CompanyTable company = $CompanyTable(this);
